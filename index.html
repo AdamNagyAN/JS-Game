@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.2/dist/css/bootstrap.min.css"
+      rel="stylesheet"
+      integrity="sha384-Zenh87qX5JnK2Jl0vWa8Ck2rdkQ2Bzep5IDxbcnCeuOxjzrPF/et3URy9Bv1WTRi"
+      crossorigin="anonymous"
+    />
+    <link rel="stylesheet" href="style.css" />
+    <title>Felvillanyozódás</title>
+  </head>
+  <body class="bg-dark text-light">
+    <section id="description">
+      <div class="container text-center">
+        <h1>Felvillanyozódás</h1>
+        <p class="my-4">
+          Nekeresdországban Nevenincs királynak egyik szeme sír, a másik nevet. Nevet, mert végre elkészült a hatalmas
+          kacsalábon forgó palotája, sok-sok tágas szobával és folyosóval. Ugyanakkor sír is, mert ezeket a helyiségeket
+          be kell világítani és melegen kell tartani, azonban az aktuális rezsiemelkedés őt is érinti. Itt az ideje
+          tehát elgondolkodni, hogy pontosan hová is helyezzünk el villanykörtéket, hogy minden megfelelően be legyen
+          világítva; ugyanakkor csak oda helyezzünk el izzót, ahol ténylegesen szükség is van rá.
+        </p>
+        <h2 class="my-3">A játék leírása</h2>
+        <ul class="text-start">
+          <li>A királynak négyzet alapú szobái vannak, amelyek fekete és fehér cellákból állnak.</li>
+          <li>A fehér cellákba villanykörtéket lehet elhelyezni.</li>
+          <li>A villanykörtékből a fény átlósan nem terjed, csak az adott sor és oszlop mentén.</li>
+          <li>A fekete cellákon valamilyen tereptárgy van, ami akadályozza a fény terjedését.</li>
+          <li>
+            A fekete cellák opcionálisan egy egész számot is tartalmazhatnak 0-tól 4-ig. Ez azt jelzi, hogy hány
+            szomszédos (alul, felül, jobbra, balra) cella tartalmaz villanykörtét. Ha van ilyen szám, akkor be kell
+            tartani!
+          </li>
+          <li>Két villanykörte soha nem világíthatja meg egymást!</li>
+          <li>A játék célja a villanykörtéket úgy elhelyezni, hogy minden fehér cellát megvilágítsanak.</li>
+        </ul>
+        <div class="d-flex flex-row align-items-center justify-content-around">
+          <div id="continue-btn-container"></div>
+          <div>
+            <select id="game-select" class="custom-select my-4">
+              <option value="" disabled selected>Válassz pályát...</option>
+            </select>
+            <button id="start-game" class="btn btn-success">Játék kezdése</button>
+          </div>
+        </div>
+      </div>
+    </section>
+    <section id="win">
+      <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+          <div class="modal-content bg-dark">
+            <div class="modal-body">Gratulálok nyertél!</div>
+            <div class="modal-footer">
+              <button type="button" class="btn btn-secondary" id="modal-reset" data-bs-dismiss="modal">
+                Visszaállít
+              </button>
+              <button id="modal-back" type="button" class="btn btn-primary">Vissza a menübe</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+    <section id="game" class="h-100">
+      <div class="container h-100 d-flex flex-column align-items-center">
+        <h1 class="mt-4">Felvillanyozódás</h1>
+        <table cellspacing="0"></table>
+        <div class="mb-5">
+          <button id="back" class="btn btn-secondary">Vissza</button>
+          <button id="save" class="btn btn-success mx-4">Mentés</button>
+          <button id="reset" class="btn btn-danger">Visszaállít</button>
+        </div>
+      </div>
+    </section>
+
+    <script src="./app.js"></script>
+    <script
+      src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.6/dist/umd/popper.min.js"
+      integrity="sha384-oBqDVmMz9ATKxIep9tiCxS/Z9fNfEXiDAYTujMAeBAsjFuCZSmKbSSUnQlmh/jp3"
+      crossorigin="anonymous"
+    ></script>
+    <script
+      src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.2/dist/js/bootstrap.min.js"
+      integrity="sha384-IDwe1+LCz02ROU9k972gdyvl+AESN10+x7tBKgc9I5HFtuNz0wWnPclzo6p9vxnk"
+      crossorigin="anonymous"
+    ></script>
+  </body>
+</html>
