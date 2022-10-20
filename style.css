@@ -49,9 +49,21 @@ table td img {
   outline: none;
   border-bottom: white 2px solid;
   color: white;
-  max-width: 200px;
 }
 
 option {
   color: black;
+}
+
+.fade-anim {
+  animation: anim 1s forwards;
+}
+
+@keyframes anim {
+  0% {
+    background-color: white;
+  }
+  100% {
+    background-color: #ffc107;
+  }
 }

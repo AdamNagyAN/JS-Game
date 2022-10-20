@@ -1,5 +1,4 @@
-const gameZone = document.querySelector("#game");
-const winModal = document.querySelector("#win");
+const gameZone = document.querySelector("#game");const winModal = document.querySelector("#win");
 const modalReset = document.querySelector("#modal-reset");
 const modalBack = document.querySelector("#modal-back");
 const description = document.querySelector("#description");
@@ -81,8 +80,10 @@ const loadGame = () => {
   return JSON.parse(localStorage.getItem("prevGame"));
 };
 
-const game = (matrix) => {
+const game = (matrixShallCopy) => {
   hideAll();
+  // Deep copy of the matrix, 'cause we dont want to modify the gameFields
+  matrix = JSON.parse(JSON.stringify(matrixShallCopy));
   gameZone.classList.remove("d-none");
   let errors = [];
 
@@ -172,8 +173,9 @@ const game = (matrix) => {
           cell.classList.remove("bg-light");
           cell.classList.add("bg-warning");
         }
-        cell.setAttribute("indexI", i);
-        cell.setAttribute("indexJ", j);
+        cell.setAttribute("indexi", i);
+        cell.setAttribute("indexj", j);
+        cell.addEventListener("click", (e) => fieldClickEvent(e));
       }
     }
 
@@ -183,6 +185,7 @@ const game = (matrix) => {
   };
 
   const checkField = (i, j, row, col) => {
+    console.log({ i, j });
     if (matrix[i][j] !== "lamp") {
       matrix[i][j] = "light";
     }
@@ -237,22 +240,22 @@ const game = (matrix) => {
     }
   };
 
-  table.addEventListener("click", (event) => {
-    if (event.target.tagName === "TD") {
-      let i = Number(event.target.getAttribute("indexI"));
-      let j = Number(event.target.getAttribute("indexJ"));
-      if (matrix[i][j] === "empty" || matrix[i][j] === "light") {
-        matrix[i][j] = "lamp";
-        renderMatrix();
-        return;
-      }
-      if (matrix[i][j] === "lamp") {
-        matrix[i][j] = "empty";
-        renderMatrix();
-        return;
-      }
+  const fieldClickEvent = (event) => {
+    let i = Number(event.target.getAttribute("indexi"));
+    let j = Number(event.target.getAttribute("indexj"));
+    console.log(matrix[i][j]);
+    if (matrix[i][j] === "empty" || matrix[i][j] === "light") {
+      matrix[i][j] = "lamp";
+      fillWithLight(i, j, true);
+      renderMatrix();
+      return;
     }
-  });
+    if (matrix[i][j] === "lamp") {
+      matrix[i][j] = "empty";
+      renderMatrix();
+      return;
+    }
+  };
 
   renderMatrix();
 };
@@ -283,11 +286,11 @@ const showDescription = () => {
 
   hideAll();
   description.classList.remove("d-none");
+
+  startGame.addEventListener("click", () => {
+    if (gameSelect.selectedIndex < 1) return;
+    game(gameFields[gameSelect.selectedIndex - 1].value);
+  });
 };
 
 showDescription();
-
-startGame.addEventListener("click", () => {
-  if (selectedField === 0) return;
-  game(gameFields[gameSelect.selectedIndex - 1].value);
-});
