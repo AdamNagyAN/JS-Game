@@ -24,7 +24,7 @@ Az alap feladatok (12 pont)
 
 [X] Pályaválasztó: legalább három különböző előre elkészített pálya közül lehet választani, és a kiválasztott pálya helyesen elindul (1 pont)
 [ ] Pályaválasztó: megadható a játékos neve, amely a játékoldalon és mentéskor megjelenik (1 pont)
-[ ] Játéktér: játék közben folyamatosan látható az eltelt idő (1 pont)
+[X] Játéktér: játék közben folyamatosan látható az eltelt idő (1 pont)
 [X] Játéktér: minden megvilágított (vagy villanykörtét tartalmazó) fehér cella sárga háttérszínnel jelenik meg (1 pont)
 [ ] Játéktér: a fény terjedése animációval történik, vagyis látható, hogy milyen sorrendben kapnak sárga háttérszínt az egyes cellák a villanykörtétől távolodva (1 pont)
 [ ] Játéktér: külön stílussal (pl. zöld szövegszín) jelenik meg, ha egy fekete cellát a beleírt számnak megfelelő számú villanykörte határol (1 pont)
