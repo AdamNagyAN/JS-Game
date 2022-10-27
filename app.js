@@ -1,8 +1,11 @@
-const gameZone = document.querySelector("#game");const winModal = document.querySelector("#win");
+const gameZone = document.querySelector("#game");
+const winModal = document.querySelector("#win");
 const modalReset = document.querySelector("#modal-reset");
 const modalBack = document.querySelector("#modal-back");
 const description = document.querySelector("#description");
 const startGame = document.querySelector("#start-game");
+const timerText = document.querySelector("#timer");
+const playerName = document.querySelector("#username");
 
 const continueBtnContainer = document.querySelector("#continue-btn-container");
 const gameSelect = document.querySelector("#game-select");
@@ -80,12 +83,34 @@ const loadGame = () => {
   return JSON.parse(localStorage.getItem("prevGame"));
 };
 
-const game = (matrixShallCopy) => {
+let timer;
+
+const saveFinishedGame = (name, game, time) => {
+  prevGames = JSON.parse(localStorage.getItem("loaderBoard")) ?? [];
+  let newData = [
+    ...prevGames,
+    {
+      name,
+      game,
+      time,
+    },
+  ];
+  localStorage.setItem("loaderBoard", JSON.stringify(newData));
+};
+
+const game = (matrixShallCopy, gameName = "unknown", name) => {
+  clearInterval(timer);
+  const startTime = new Date();
+  const renderTimer = () => {
+    timerText.innerHTML = new Date(new Date() - startTime).toLocaleTimeString().split(":").slice(1, 3).join(":");
+  };
+  timer = setInterval(() => renderTimer(), 1000);
   hideAll();
   // Deep copy of the matrix, 'cause we dont want to modify the gameFields
   matrix = JSON.parse(JSON.stringify(matrixShallCopy));
   gameZone.classList.remove("d-none");
   let errors = [];
+  let validCells = [];
 
   modalReset.addEventListener("click", () => {
     resetGame();
@@ -125,10 +150,14 @@ const game = (matrixShallCopy) => {
       if (col + 1 < matrix.length && matrix[row][col + 1] == "lamp") errors.push([row, col + 1]);
       if (col - 1 >= 0 && matrix[row][col - 1] == "lamp") errors.push([row, col - 1]);
     }
+    if (around === maxAround) {
+      validCells.push([row, col]);
+    }
   };
 
   const renderMatrix = () => {
     errors = [];
+    validCells = [];
     if (table) {
       table.innerHTML = "";
     }
@@ -156,6 +185,10 @@ const game = (matrixShallCopy) => {
         let cell = row.insertCell();
         cell.classList.add("bg-light");
         const isError = !!errors.find((it) => it[0] === i && it[1] === j);
+        const isValid = !!validCells.find((it) => it[0] === i && it[1] === j);
+        if (isValid) {
+          cell.classList.add("text-success");
+        }
         if (isError) {
           cell.classList.remove("bg-light");
           cell.classList.add("bg-danger");
@@ -181,6 +214,7 @@ const game = (matrixShallCopy) => {
 
     if (checkForWin()) {
       setWinModal(true);
+      saveFinishedGame(name, gameName, timerText.innerHTML);
     }
   };
 
@@ -212,7 +246,7 @@ const game = (matrixShallCopy) => {
   };
 
   const saveGame = () => {
-    localStorage.setItem("prevGame", JSON.stringify(matrix));
+    localStorage.setItem("prevGame", JSON.stringify({ name, game: matrix }));
   };
 
   save.addEventListener("click", () => saveGame());
@@ -280,7 +314,10 @@ const showDescription = () => {
     const btn = document.createElement("button");
     btn.classList.add("btn", "btn-success");
     btn.innerHTML = "Előző játék folytatása";
-    btn.addEventListener("click", () => game(loadGame()));
+    btn.addEventListener("click", () => game(loadGame().name, loadGame().game));
+    let text = document.createElement("p");
+    text.innerHTML = loadGame().name;
+    continueBtnContainer.appendChild(text);
     continueBtnContainer.appendChild(btn);
   }
 
@@ -288,8 +325,13 @@ const showDescription = () => {
   description.classList.remove("d-none");
 
   startGame.addEventListener("click", () => {
+    if (!playerName.value) return;
     if (gameSelect.selectedIndex < 1) return;
-    game(gameFields[gameSelect.selectedIndex - 1].value);
+    game(
+      gameFields[gameSelect.selectedIndex - 1].value,
+      gameFields[gameSelect.selectedIndex - 1].label,
+      playerName.value
+    );
   });
 };
 
