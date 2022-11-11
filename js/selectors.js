@@ -5,6 +5,7 @@ export const timerText = document.querySelector("#timer");
 export const reset = document.querySelector("#reset");
 export const save = document.querySelector("#save");
 export const back = document.querySelector("#back");
+export const gamePlayerNameLabel = gameZone.querySelector("#player-name");
 // win-modal
 export const winModal = document.querySelector("#win");
 export const modalReset = document.querySelector("#modal-reset");

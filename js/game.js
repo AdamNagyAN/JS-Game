@@ -1,8 +1,18 @@
 import { hideAll, saveFinishedGame, saveGame, showDescription } from "./utils.js";
-import { winModal, gameZone, modalReset, modalBack, table, timerText, save, back } from "./selectors.js";
+import {
+  winModal,
+  gameZone,
+  modalReset,
+  modalBack,
+  table,
+  timerText,
+  save,
+  back,
+  gamePlayerNameLabel,
+} from "./selectors.js";
 
 let timer;
-let validCells = [];
+let newlyAddedLights = [];
 
 const setWinModal = (show) => {
   if (show === true) {
@@ -49,24 +59,36 @@ const isValidCell = (matrix, row, col, validCells, errors) => {
   }
 };
 
-const fillWithLight = (matrix, row, col, errors) => {
+const fillWithLight = (matrix, row, col, errors, isNew = false) => {
   for (let i = row - 1; i >= 0; i--) {
     let j = col;
+    if (isNew && matrix[i][j] != "light") {
+      newlyAddedLights.push([i, j]);
+    }
     if (typeof matrix[i][j] === "number") break;
     checkField(matrix, i, j, row, col, errors);
   }
   for (let i = row + 1; i < matrix.length; i++) {
     let j = col;
+    if (isNew && matrix[i][j] != "light") {
+      newlyAddedLights.push([i, j]);
+    }
     if (typeof matrix[i][j] === "number") break;
     checkField(matrix, i, j, row, col, errors);
   }
   for (let j = col - 1; j >= 0; j--) {
     let i = row;
+    if (isNew && matrix[i][j] != "light") {
+      newlyAddedLights.push([i, j]);
+    }
     if (typeof matrix[i][j] === "number") break;
     checkField(matrix, i, j, row, col, errors);
   }
   for (let j = col + 1; j < matrix.length; j++) {
     let i = row;
+    if (isNew && matrix[i][j] != "light") {
+      newlyAddedLights.push([i, j]);
+    }
     if (typeof matrix[i][j] === "number") break;
     checkField(matrix, i, j, row, col, errors);
   }
@@ -99,7 +121,9 @@ const resetGame = (matrix, errors, validCells, playerName, gameName) => {
   renderMatrix(matrix, errors, validCells, playerName, gameName);
 };
 
-const renderMatrix = (matrix, errors, validCells, playerName, gameName) => {
+const sleep = (ms) => new Promise((res) => setTimeout(res, ms));
+
+const renderMatrix = async (matrix, errors, validCells, playerName, gameName) => {
   errors = [];
   validCells = [];
   if (table) {
@@ -130,6 +154,7 @@ const renderMatrix = (matrix, errors, validCells, playerName, gameName) => {
       cell.classList.add("bg-light");
       const isError = !!errors.find((it) => it[0] === i && it[1] === j);
       const isValid = !!validCells.find((it) => it[0] === i && it[1] === j);
+      const isNew = !!newlyAddedLights.find((it) => it[0] === i && it[1] === j);
       if (isValid) {
         cell.classList.add("text-success");
       }
@@ -146,7 +171,7 @@ const renderMatrix = (matrix, errors, validCells, playerName, gameName) => {
         cell.classList.remove("bg-light");
         cell.classList.add("bg-warning");
       }
-      if (matrix[i][j] === "light") {
+      if (matrix[i][j] === "light" && !isNew) {
         cell.classList.remove("bg-light");
         cell.classList.add("bg-warning");
       }
@@ -154,6 +179,14 @@ const renderMatrix = (matrix, errors, validCells, playerName, gameName) => {
       cell.setAttribute("indexj", j);
       cell.addEventListener("click", (e) => fieldClickEvent(e, matrix, errors, validCells, playerName, gameName));
     }
+  }
+  for (let i = 0; i < newlyAddedLights.length; i++) {
+    let row = newlyAddedLights[i][0];
+    let col = newlyAddedLights[i][1];
+    console.log({ row, col });
+    table.rows[row].cells[col].classList.remove("bg-light");
+    table.rows[row].cells[col].classList.add("fade-anim");
+    await sleep(50);
   }
 
   if (checkForWin(matrix, errors)) {
@@ -163,11 +196,12 @@ const renderMatrix = (matrix, errors, validCells, playerName, gameName) => {
 };
 
 const fieldClickEvent = (event, matrix, errors, validCells, playerName, gameName) => {
+  newlyAddedLights = [];
   let i = Number(event.target.getAttribute("indexi"));
   let j = Number(event.target.getAttribute("indexj"));
   if (matrix[i][j] === "empty" || matrix[i][j] === "light") {
     matrix[i][j] = "lamp";
-    fillWithLight(matrix, i, j, errors);
+    fillWithLight(matrix, i, j, errors, true);
     renderMatrix(matrix, errors, validCells, playerName, gameName);
     return;
   }
@@ -180,12 +214,16 @@ const fieldClickEvent = (event, matrix, errors, validCells, playerName, gameName
 
 const game = (matrixShallCopy, gameName = "unknown", playerName, startTimeStr) => {
   hideAll();
+  gameZone.classList.remove("d-none");
+  gamePlayerNameLabel.innerHTML = `Játékosnév: ${playerName}`;
+
   clearInterval(timer);
   const startTime = new Date();
   timer = setInterval(() => renderTimer(startTime), 1000);
+
   // Deep copy of the matrix, 'cause we dont want to modify the gameFields
   let matrix = JSON.parse(JSON.stringify(matrixShallCopy));
-  gameZone.classList.remove("d-none");
+
   let errors = [];
   let validCells = [];
 

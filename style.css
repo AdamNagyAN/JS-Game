@@ -56,7 +56,7 @@ option {
 }
 
 .fade-anim {
-  animation: anim 1s forwards;
+  animation: anim 0.25s forwards;
 }
 
 @keyframes anim {
