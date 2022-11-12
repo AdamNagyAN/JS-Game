@@ -32,7 +32,7 @@ Az alap feladatok (12 pont)
 [x] Játéktér: a játék menet közben megszakítható és menthető (1 pont)
 [x] Pályaválasztó: láthatók a legutóbbi játékok eredményei: játékos neve, pálya neve, teljesítés ideje (1 pont)
 [x] Pályaválasztó: a legutóbbi játékok eredményei megmaradnak az oldal bezárása után is (1 pont)
-[] Pályaválasztó: a pályaválasztó oldalon látszik, ha van mentett játék, és ez a játék helyesen betölthető (1 pont)
+[x] Pályaválasztó: a pályaválasztó oldalon látszik, ha van mentett játék, és ez a játék helyesen betölthető (1 pont)
 [x] Egyéb: igényes kialakítás (1 pont)
 
 Plusz feladatok (plusz 5 pont)

@@ -223,7 +223,7 @@ const game = (matrixShallCopy, gameName = "unknown", playerName, startTimeStr) =
 
   // Deep copy of the matrix, 'cause we dont want to modify the gameFields
   let matrix = JSON.parse(JSON.stringify(matrixShallCopy));
-
+  newlyAddedLights = [];
   let errors = [];
   let validCells = [];
 
